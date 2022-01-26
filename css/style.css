@@ -1,0 +1,40 @@
+.boardCells {
+    background-color: blanchedalmond;
+    padding: 10px;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    
+}
+
+.cell :hover {
+    color: rgb(124, 27, 41);
+}
+
+body {
+    background-color: lightpink;
+}
+
+h1 {
+    color: rgb(158, 34, 34);
+    text-align: center;
+    padding: 10px;
+    font-family: comic sans MS;
+}
+button{
+    cursor: pointer;
+    margin: auto;
+    left: 50%;
+    
+}
+
+table{
+    margin: auto;
+}
