@@ -5,14 +5,16 @@
     height: 100px;
     margin: auto;
     box-sizing: border-box;
-    
+
+
+
 }
 
 .cell {
     width: 60px;
     height: 60px;
     cursor: pointer;
-    
+
 }
 
 .cell :hover {
@@ -20,45 +22,105 @@
 }
 
 body {
-    background-color: lightpink;
     text-align: center;
+    justify-content: center;
+    /* overflow: hidden; */
+    height: 100vh;
+    background: linear-gradient(0deg,
+            rgb(200, 90, 233)0%,
+            rgb(153, 93, 13)100%);
+
 }
 
 h1 {
-    color: rgb(158, 34, 34);
+    color: rgb(63, 7, 7);
     text-align: center;
     padding: 10px;
     font-family: comic sans MS;
+    font-size: 70px;
+
 }
-button{
+
+button {
+    background-color: lightsalmon;
+    font-family: comic sans MS;
     cursor: pointer;
     margin: auto;
     left: 50%;
-    
+    padding: 10px;
+
+
 }
 
-table{
+table {
     margin: auto;
     box-sizing: border-box;
+    table-layout: fixed;
+
+
 }
+
+td {
+    line-height: 0px;
+
+}
+
+/* th,
+td {
+  border: 1px solid black;
+  width: 100px;
+  overflow: hidden;
+} */
 
 
 .modal {
-    background-color: lightseagreen;
+    background-color: lightsalmon;
+    border: 4px solid black;
+    border-radius: 10px;
     display: none;
-    position: absolute;
-    top: 10px;
+    /* position: absolute; */
     right: 10px;
     padding: 5px;
-    width: 200px;
-    height: 100px;
-  }
-  
-  .box {
+    /* width: 200px;
+    height: 100px; */
+    position: absolute;
+    float: left;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%, -50%);
+}
+
+/* .box {
     max-width: 600px;
     margin: auto;
     border: 1px solid lightblue;
     border-radius: 4px;
     padding: 10px;
-    margin:10px;
+    margin: 10px;
+} */
+
+.timer {
+    border: 4px solid black;
+    border-radius: 10px;
+    padding: 3px;
+
+}
+
+.timer:hover {
+    background-color: rgb(243, 190, 239);
+}
+
+
+.restart {
+    border: 3px solid white;
+    width: 140px;
+}
+
+.selected {
+    background-color: rgb(243, 214, 238);
+    color: #414141
+}
+
+h3 span {
+    font-family: comic sans MS;
 }

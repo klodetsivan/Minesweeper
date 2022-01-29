@@ -1,5 +1,6 @@
 'use strict'
 const MINE = '💣'
+const NUM0 = '0'
 const NUM1 = '1'
 const NUM2 = '2️'
 const NUM3 = '3'
@@ -10,11 +11,8 @@ const NUM7 = '7'
 const NUM8 = '8'
 
 
-// var gCountMines = 0
-// var num = [1, 2, 3, 4, 5, 6, 7, 8]
 var gId = 1
 var gBoard;
-var gInterval;
 var gSize = 4;
 var gGame = {
     isOn: false,
@@ -26,13 +24,17 @@ var gLevel = {
     SIZE: 4,
     MINES: 2
 }
+var gIntervalId;
+
+var gElMinutesLabel = document.getElementById("minutes");
+var gElSecondsLabel = document.getElementById("seconds");
+var gTotalSeconds
+var gElSelectedCell = null;
+
 
 function changeLevel(size, mines) {
     gLevel.SIZE = size;
     gLevel.MINES = mines;
-    clearInterval(gInterval)
-    var elTimer = document.querySelector('.Timer')
-    elTimer.innerText = 0;
     init()
 
 
@@ -40,16 +42,21 @@ function changeLevel(size, mines) {
 
 
 function init() {
-    // closeModal()
+
     gBoard = createBoard(gLevel);
     // console.log(gBoard)
     renderBoard(gBoard);
-    clearInterval(gInterval)
-    var elTimer = document.querySelector('.Timer')
-    elTimer.innerText = 0;
-
+    // clearInterval(gInterval)
+    // var elTimer = document.querySelector('.Timer')
+    // elTimer.innerText = 0;
     gId = 1
     gGame.isOn = true
+    document.querySelector('.start').innerText = '😀'
+    gTotalSeconds = 0;
+    clearInterval(gIntervalId);
+    gElMinutesLabel.innerHTML = '00'
+    gElSecondsLabel.innerHTML = '00'
+
 
 }
 
@@ -79,11 +86,12 @@ function createCell() {
     var cell = {
         id: gId++,
         minesAroundCount: 8,
-        isShown: true,
+        isShown: false,
         isMine: false,
         isMarked: true,
         gameElement: null,
-        color: null
+
+
     }
     return cell;
 }
@@ -105,7 +113,9 @@ function renderBoard(board) {
 
             var numOfNegs = setMinesNegsCount(i, j, board)
             if (cell.gameElement === null) {
-
+                // if (numOfNegs === undefined) {
+                //     cell.gameElement = NUM0
+                // }
                 if (numOfNegs === 1) {
                     cell.gameElement = NUM1
                 }
@@ -135,7 +145,7 @@ function renderBoard(board) {
 
             var currCell = 'currCell ' + (i + 1) + ',' + (j + 1)
             strHtml += `\t<td onclick="cellClicked(this,${i},${j})"
-            title=" ${currCell}" class="cell" class="timer${setTimer}"
+            title=" ${currCell}" id="${i},${j}" class="cell"
 
              style="display: ${cell.id}"</td>\n`
         }
@@ -151,6 +161,8 @@ function renderBoard(board) {
 
 
 
+
+
 // gBoard[2[2]] = MINE;
 // gBoard[1[3]] = MINE;
 
@@ -158,13 +170,10 @@ function renderBoard(board) {
 function restartGame(size) {
     gSize = size;
     init()
-    clearInterval(gInterval)
-    var elTimer = document.querySelector('.Timer')
-    elTimer.innerText = 0;
 
 
-
-    //game over?
+    // var elTimer = document.querySelector('.Timer')
+    // elTimer.innerText = 0;
 }
 
 
@@ -172,31 +181,58 @@ function restartGame(size) {
 function cellClicked(elCell, i, j) {
     // getting the specific cell from the model:
     var cell = gBoard[i][j];
-    console.log(gBoard)
-    console.log(cell)
-    console.log('cell clicked: ', elCell, i, j)
+    console.log(gBoard);
+    console.log(cell);
+    console.log('cell clicked: ', elCell, i, j);
+    // setInterval(setTime,1000);
+    // elCell.classList.add('selected');
+    // gElSelectedCell = elCell;
 
+
+
+    // if(gElSelectedCell){
+    //     setInterval(setTime, 1000);
+    // }
     // changing the specific cell in the DOM
-    elCell.innerText = cell.gameElement
+    elCell.innerText = cell.gameElement;
     // if (!elCell === null) gInterval = setInterval(setTimer, 1000);
+    // if (elCell.innerText === NUM0 || NUM1 || NUM2 || NUM3 || NUM4 || NUM5 || NUM6 || NUM7 || NUM8 || MINE) {
+    //     setInterval(setTime, 1000);
+    // }
+    if (elCell.innerText === NUM0 || NUM1 || NUM2 || NUM3 || NUM4 || NUM5 || NUM6 || NUM7 || NUM8 || MINE) {
+
+        setInterval(setTime, 1000);
+        elCell.style.backgroundColor = 'rgb(243, 214, 238)';
+        //  elCell.classList.add('selected');
+    }
     if (cell.gameElement === MINE) {
+        displayMines(gBoard);
         cell.isMine = true
         elCell.style.backgroundColor = 'red';
-
-        // var elCell = document.querySelector('')
-        // elCell.style.backgroundColor = 
+        document.querySelector('.start').innerText = '😭'
         GameOver();
     }
+    if (cell.gameElement === null) {
+        elCell.innerText = NUM0
+        expandShown(gBoard, i, j)
+        elCell.style.backgroundColor = 'rgb(243, 214, 238)';
+    }
+    // if (elCell.gameElement === null) {
+
+    //     elCell.innerText = 
+    // }
     // if(cell.gameElement === null){
     //     elCell.style.backgroundColor = 'light pink';
     // }
+
     // if (!cell.gameElement === MINE) {
     //     setMinesNegsCount()
     // }
     // gInterval = setInterval(setTimer,1000)
-    if (elCell.innerText === NUM1 || NUM2 || NUM3 || NUM4 || NUM5 || NUM6 || NUM7 || NUM8 || MINE) {
-        setTimer()
-    }
+    // if (elCell.innerText === null) {
+    //     elCell.classList.add('correct');
+    // }
+
     // if (elCell.innerText === '') {
     //     expandShown()
     // }
@@ -213,22 +249,46 @@ function cellClicked(elCell, i, j) {
 
 }
 
+function displayMines(board) {
+    var cell;
+
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board[0].length; j++) {
+            cell = board[i][j];
+            if (cell.gameElement === MINE) {
+                // var cellPos = `cell${i},${j}`
+                document.getElementById(`${i},${j}`).innerText = cell.gameElement
+                // cell.style.display = 'block';
+                cell.isShown = true;
+                // elCell.isShown.style.display = 'block'
+                // elCell.innerText = cell.gameElement;
+            }
+
+        }
+
+    }
+}
 
 
 function GameOver() {
     gGame.isOn = false
+
+
+    gTotalSeconds = 0;
+    clearInterval(gIntervalId);
+    gElMinutesLabel.innerHTML = '00'
+    gElSecondsLabel.innerHTML = '00'
     openModal()
-    // clearInterval(gInterval)
     // renderBoard()
-    clearInterval(gInterval)
-    var elTimer = document.querySelector('.Timer')
-    elTimer.innerText = 0;
+    // clearInterval(gInterval)
+    // var elTimer = document.querySelector('.Timer')
+    // elTimer.innerText = 0;
 }
 
 
 
 
-function expandShown(board, elCell, i, j) {
+function expandShown(board, cellI, cellJ) {
 
     var emptyCellCount = 0;
     for (var i = cellI - 1; i <= cellI + 1; i++) {
@@ -236,8 +296,20 @@ function expandShown(board, elCell, i, j) {
         for (var j = cellJ - 1; j <= cellJ + 1; j++) {
             if (j < 0 || j >= board[i].length) continue;
             if (i === cellI && j === cellJ) continue;
-            elCell = board[i][j]
-            if (elCell.gameElement === '') emptyCellCount++;
+            var cell = board[i][j]
+
+            if (cell.gameElement !== MINE) {
+                var elm = document.getElementById(`${i},${j}`);
+                elm.innerText = cell.gameElement
+                cell.isShown = true;
+                elm.style.backgroundColor = 'rgb(243, 214, 238)';
+            }
+            if (cell.gameElement === null) {
+                elm.innerText = NUM0
+                cell.isShown = true;
+                elm.style.backgroundColor = 'rgb(243, 214, 238)';
+            }
+
         }
     }
     // console.log(negsCount)
@@ -251,6 +323,7 @@ function gAddMine(board) {
     // console.log(randI, randJ, board)
     if (board[randI][randJ].gameElement === null) {
         board[randI][randJ].gameElement = MINE;
+        // board[randI][randJ].gameElement.style.display = 'none';
 
         // var currCell = { i: randI, j: randJ }
         // renderCell(currCell, MINE)
@@ -284,6 +357,17 @@ function setMinesNegsCount(cellI, cellJ, board) {
 //     }
 // }
 
+function setTime() {
+    gTotalSeconds++
+    gElMinutesLabel.innerHTML = pad(parseInt(gTotalSeconds / 60));
+    gElSecondsLabel.innerHTML = pad(gTotalSeconds % 60);
+}
+
+function pad(val) {
+    var valString = val + "";
+    return valString.length === 1 ? "0" + valString : valString
+}
+
 function openModal() {
 
     var elBox = document.querySelector('.modal')
@@ -298,3 +382,4 @@ function closeModal() {
     init()
     //  hide the modal
 }
+

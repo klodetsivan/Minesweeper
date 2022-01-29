@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Minesweeper</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -13,8 +13,9 @@
   <h1 title="Minesweeper">Minesweeper</h1>
   <div>
     <button class="start" onclick="restartGame(this)">😀</button>
-  </div>
-  <div class="Timer"></div>
+    <div style="font-family: 'Orbitron', sans-serif;" class="timer">
+      <label id="minutes">00</label><span>:</span><label id="seconds">00</label>
+    </div>
 
   </div>
   <button onclick="changeLevel(4,2)">Beginner</button>
@@ -29,7 +30,7 @@
   </table>
   <div class="modal">
     <button onclick="closeModal(this)">Play again!</button>
-    <h3><span>GAME OVER</span></h3>
+    <h3><span>You got bombed!</span></h3>
 
   </div>
 
